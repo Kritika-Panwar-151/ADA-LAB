@@ -1,0 +1,93 @@
+#include <stdio.h>
+
+#define MAX 10
+#define INF 999
+
+int parent[MAX];
+
+// Find parent
+int find(int x)
+{
+    while(parent[x] != x)
+        x = parent[x];
+
+    return x;
+}
+
+// Union
+void unionSet(int a, int b)
+{
+    parent[find(a)] = find(b);
+}
+
+int main()
+{
+    int cost[MAX][MAX];
+    int n, i, j;
+    int min, a, b;
+    int edges = 0, minCost = 0;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter adjacency matrix:\n");
+
+    // Read matrix
+    for(i = 0; i < n; i++)
+    {
+        for(j = 0; j < n; j++)
+        {
+            scanf("%d", &cost[i][j]);
+
+            // 0 means no edge
+            if(cost[i][j] == 0)
+                cost[i][j] = INF;
+        }
+    }
+
+    // Initialize parent array
+    for(i = 0; i < n; i++)
+    {
+        parent[i] = i;
+    }
+
+    printf("Edges in MST:\n");
+
+    while(edges < n - 1)
+    {
+        min = INF;
+
+        // Find minimum edge
+        for(i = 0; i < n; i++)
+        {
+            for(j = i + 1; j < n; j++)
+            {
+                if(cost[i][j] < min)
+                {
+                    min = cost[i][j];
+                    a = i;
+                    b = j;
+                }
+            }
+        }
+
+        // Check cycle
+        if(find(a) != find(b))
+        {
+            printf("%d - %d = %d\n", a, b, min);
+
+            minCost += min;
+
+            unionSet(a, b);
+
+            edges++;
+        }
+
+        // Remove selected edge
+        cost[a][b] = cost[b][a] = INF;
+    }
+
+    printf("Minimum Cost = %d\n", minCost);
+
+    return 0;
+}
