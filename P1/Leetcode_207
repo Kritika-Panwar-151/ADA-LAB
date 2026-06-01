@@ -1,0 +1,32 @@
+#include <stdbool.h>
+bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize){
+    int graph[2000][2000] = {0};
+    int indegree[2000] = {0};
+    int queue[2000];
+    int front = 0, rear = 0;
+    int count = 0;
+    for(int i = 0; i < prerequisitesSize; i++){
+        int a = prerequisites[i][0];
+        int b = prerequisites[i][1];
+        graph[b][a] = 1;
+        indegree[a]++;
+    }
+    for(int i = 0; i < numCourses; i++){
+        if(indegree[i] == 0){
+            queue[rear++] = i;
+        }
+    }
+    while(front < rear){
+        int node = queue[front++];
+        count++;
+        for(int i = 0; i < numCourses; i++){
+            if(graph[node][i] == 1){
+                indegree[i]--;
+                if(indegree[i] == 0){
+                    queue[rear++] = i;
+                }
+            }
+        }
+    }
+    return (count == numCourses);
+}
