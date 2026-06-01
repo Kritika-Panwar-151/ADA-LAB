@@ -1,0 +1,66 @@
+#include<stdio.h>
+#include<limits.h>
+void p(int parent[],int j){
+    if(parent[j]==j){
+        printf(" Path:%d ",j);
+        return;
+    }
+    p(parent,parent[j]);
+    printf("%d ",j);
+}
+void main(){
+    int n;
+    printf("Enter the number of vertices:");
+    scanf("%d",&n);
+    int a[n][n];
+    printf("Enter the weights and enter 0 for no edges:\n");
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            scanf("%d",&a[i][j]);
+        }
+    }
+    int distance[n];
+    int visited[n];
+    int parent[n];
+    int source;
+    printf("Enter the source vertex:");
+    scanf("%d",&source);
+    for(int i=0;i<n;i++){
+        distance[i]=(i!=source && a[source][i]==0)?INT_MAX:a[source][i];
+        parent[i]=source;
+        visited[i]=0;
+    }
+    distance[source]=0;
+    visited[source]=1;
+    for(int i=1;i<n;i++){
+            int min=INT_MAX;
+        int u=-1;
+        for(int j=0;j<n;j++){
+            if(!visited[j] && distance[j]<min){
+                min=distance[j];
+                u=j;
+            }
+        }
+        if(u==-1) break;
+        visited[u]=1;
+        for(int v=0;v<n;v++){
+            if(a[u][v]!=0 && !visited[v]){
+                if(distance[u]+a[u][v]<distance[v]){
+                    distance[v]=distance[u]+a[u][v];
+                    parent[v]=u;
+                }
+            }
+
+        }
+    }
+    printf("The distances are:\n");
+    for(int i=0;i<n;i++){
+        printf("%d to %d",source,i);
+        if(distance[i]==INT_MAX) printf(":No path");
+        else{
+            p(parent,i);
+            printf(":%d",distance[i]);
+        }
+        printf("\n");
+    }
+}
