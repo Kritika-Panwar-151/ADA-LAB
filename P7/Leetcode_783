@@ -1,0 +1,20 @@
+#include<limits.h>
+#include<stdlib.h>
+int minVal=INT_MAX;
+struct TreeNode* prev=NULL;
+void inorder(struct TreeNode* root){
+    if(root!=NULL){
+        inorder(root->left);
+        if(prev!=NULL){
+            int d=abs(root->val-prev->val);
+            if(d<minVal) minVal=d;
+        }
+        prev=root;
+        inorder(root->right);
+    }
+}
+int minDiffInBST(struct TreeNode* root) {
+    minVal=INT_MAX;
+    prev=NULL;
+    inorder(root);
+    return minVal;
